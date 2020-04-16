@@ -208,7 +208,7 @@ This approach helps in preventing memory overloading by not loading the frames b
 <span id="memoir-data-data-augmentation-module"></span><h2>memoir.data.data_augmentation module<a class="headerlink" href="#module-memoir.data.data_augmentation" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="memoir.data.data_augmentation.available_transformations">
-<code class="sig-prename descclassname">memoir.data.data_augmentation.</code><code class="sig-name descname">available_transformations</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoir/data/data_augmentation.html#available_transformations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#memoir.data.data_augmentation.available_transformations" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">memoir.data.data_augmentation.</code><code class="sig-name descname">available_transformations</code><span class="sig-paren">(</span><em class="sig-param">return_dict=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoir/data/data_augmentation.html#available_transformations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#memoir.data.data_augmentation.available_transformations" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prints the transformations available for data augmentation.</p>
 <dl class="simple">
 <dt>Output:</dt><dd><ul class="simple">
@@ -229,7 +229,7 @@ This approach helps in preventing memory overloading by not loading the frames b
 
 <dl class="function">
 <dt id="memoir.data.data_augmentation.data_aug">
-<code class="sig-prename descclassname">memoir.data.data_augmentation.</code><code class="sig-name descname">data_aug</code><span class="sig-paren">(</span><em class="sig-param">batch</em>, <em class="sig-param">size_of_aug=None</em>, <em class="sig-param">techniques='All'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoir/data/data_augmentation.html#data_aug"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#memoir.data.data_augmentation.data_aug" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">memoir.data.data_augmentation.</code><code class="sig-name descname">data_aug</code><span class="sig-paren">(</span><em class="sig-param">batch</em>, <em class="sig-param">size_of_aug=None</em>, <em class="sig-param">techniques='All'</em>, <em class="sig-param">num_of_trans=5</em>, <em class="sig-param">repeat=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/memoir/data/data_augmentation.html#data_aug"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#memoir.data.data_augmentation.data_aug" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to perform data augmentation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -239,10 +239,19 @@ This approach helps in preventing memory overloading by not loading the frames b
 If <strong>float</strong>, Take it as the fraction of the batch to augment.
 If <strong>integer</strong>, Augment only that many images.
 If <strong>None</strong>, Take 30% of the batch for augmentation.</p></li>
+<li><p><strong>techniques</strong> (<em>str</em><em>, </em><em>list</em>) – List of transformations to apply in data augmentation. Default: ‘All’</p></li>
+<li><p><strong>num_of_trans</strong> (<em>int</em>) – Number of transformation to apply on an image. Default: 5</p></li>
+<li><p><strong>repeat</strong> (<em>bool</em>) – Whether to repeat a transformation for a image or not. Default: True</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>A numpy array of original and augmented images.</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ValueError</strong> – When the entered values does not match the d-types of respective parameter.</p></li>
+<li><p><strong>ValueError</strong> – When <cite>repeat=False</cite>, and <cite>num_of_trans</cite> is more than the number of available transformations.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>

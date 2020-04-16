@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>memoir.data.video_to_frames &mdash; Memoir 1.0.0 documentation</title>
+  <title>memoir.data.video_to_frames &mdash; Memoir 1.0.0</title>
   
 
   
@@ -82,8 +82,11 @@
               
             
             
-              <!-- Local TOC -->
-              <div class="local-toc"></div>
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../memoir.data.html">memoir.data package</a></li>
+</ul>
+
             
           
         </div>
@@ -145,47 +148,30 @@
            <div itemprop="articleBody">
             
   <h1>Source code for memoir.data.video_to_frames</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
 
 <span class="kn">import</span> <span class="nn">cv2</span>
 
-
-<div class="viewcode-block" id="process"><a class="viewcode-back" href="../../../memoir.data.html#memoir.data.video_to_frames.process">[docs]</a><span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="n">vid_type</span><span class="p">,</span> <span class="n">series</span><span class="p">,</span> <span class="n">threshold</span><span class="p">):</span>
-
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Function to convert videos to frames.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        vid_type: Type of video: Real or Animated. For now we have only these options. But the code is ready for future additions.</span>
-<span class="sd">        series: Name of the series the video to be converted is from.</span>
-<span class="sd">        threshold: Number of frame to make for a particular series.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        Nothing so far.</span>
-
-<span class="sd">    Raises:</span>
-<span class="sd">        An exception, of course!</span>
-
-<span class="sd">    &#39;&#39;&#39;</span>
+<div class="viewcode-block" id="vid_to_frames"><a class="viewcode-back" href="../../../memoir.data.html#memoir.data.video_to_frames.vid_to_frames">[docs]</a><span class="k">def</span> <span class="nf">vid_to_frames</span><span class="p">(</span><span class="n">vid_type</span><span class="p">,</span> <span class="n">series</span><span class="p">,</span> <span class="n">threshold</span><span class="p">):</span>
 
     <span class="k">try</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span>
-            <span class="s2">&quot;../Data_Memoir&quot;</span>
-        <span class="p">):</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span>
-                <span class="s2">&quot;../Data_Memoir&quot;</span>
-            <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">paths</span><span class="p">[</span><span class="s1">&#39;frame_dir&#39;</span><span class="p">]):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">paths</span><span class="p">[</span><span class="s1">&#39;frame_dir&#39;</span><span class="p">])</span>
         <span class="c1"># Check for the folder &#39;Data_Memoir&#39;.</span>
-        <span class="c1"># It not present, create it.</span>
+        <span class="c1"># If not present, create it.</span>
     <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span>
-            <span class="s2">&quot;Could not make the Data_Memoir directory.&quot;</span>
-        <span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Could not make the Data_Memoir directory.&quot;</span><span class="p">)</span>
 
-    <span class="n">videos</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="s2">&quot;./Memoir_Videos/&quot;</span> <span class="o">+</span> <span class="n">vid_type</span> <span class="o">+</span>
-                        <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">series</span> <span class="o">+</span> <span class="s2">&quot;/Video/&quot;</span>
-                        <span class="c1"># To take into consideration that there might be more than 1 video for a series.</span>
-                        <span class="p">)</span>
+    <span class="n">videos</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span>
+        <span class="n">paths</span><span class="p">[</span><span class="s1">&#39;video_dir&#39;</span><span class="p">]</span>
+        <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">vid_type</span><span class="p">)</span>
+        <span class="o">+</span> <span class="s2">&quot;/&quot;</span>
+        <span class="o">+</span> <span class="n">series</span>
+        <span class="o">+</span> <span class="s2">&quot;/Video/&quot;</span>
+        <span class="c1"># To take into consideration that</span>
+        <span class="c1"># there might be more than 1 video for a series.</span>
+    <span class="p">)</span>
 
     <span class="n">currentframe</span> <span class="o">=</span> <span class="mi">0</span>
 
@@ -194,7 +180,12 @@
         <span class="c1"># Looping over the videos of a particular series</span>
 
         <span class="n">cam</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoCapture</span><span class="p">(</span>
-            <span class="s2">&quot;./Memoir_Videos/&quot;</span> <span class="o">+</span> <span class="n">vid_type</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">series</span> <span class="o">+</span> <span class="s2">&quot;/Video/&quot;</span> <span class="o">+</span> <span class="n">vid</span>
+            <span class="n">paths</span><span class="p">[</span><span class="s1">&#39;video_dir&#39;</span><span class="p">]</span>
+            <span class="o">+</span> <span class="n">vid_type</span>
+            <span class="o">+</span> <span class="s2">&quot;/&quot;</span>
+            <span class="o">+</span> <span class="n">series</span>
+            <span class="o">+</span> <span class="s2">&quot;/Video/&quot;</span>
+            <span class="o">+</span> <span class="n">vid</span>
             <span class="c1"># Reading a video using open-cv</span>
         <span class="p">)</span>
 
@@ -215,12 +206,9 @@
             <span class="k">if</span> <span class="n">ret</span><span class="p">:</span>
 
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span>
-                        <span class="s2">&quot;../Data_Memoir/&quot;</span> <span class="o">+</span> <span class="n">vid_type</span>
-                    <span class="p">):</span>
-                        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span>
-                            <span class="s2">&quot;../Data_Memoir/&quot;</span> <span class="o">+</span> <span class="n">vid_type</span><span class="p">)</span>
-                <span class="c1"># Check for the folder &#39;Video_Type&#39; (Real or Animated) in Data_Memoir folder.</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">paths</span><span class="p">[</span><span class="s1">&#39;frame_dir&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">vid_type</span><span class="p">):</span>
+                        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">paths</span><span class="p">[</span><span class="s1">&#39;frame_dir&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">vid_type</span><span class="p">)</span>
+                <span class="c1"># Check for the folder &#39;Video_Type&#39; in Data_Memoir.</span>
                 <span class="c1"># If not present, create it.</span>
                 <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
                     <span class="nb">print</span><span class="p">(</span>
@@ -230,12 +218,8 @@
                     <span class="p">)</span>
 
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span>
-                        <span class="s2">&quot;../Data_Memoir/&quot;</span> <span class="o">+</span> <span class="n">vid_type</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">series</span>
-                    <span class="p">):</span>
-                        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span>
-                            <span class="s2">&quot;../Data_Memoir/&quot;</span> <span class="o">+</span> <span class="n">vid_type</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">series</span>
-                        <span class="p">)</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">paths</span><span class="p">[</span><span class="s1">&#39;frame_dir&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">vid_type</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">series</span><span class="p">):</span>
+                        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">paths</span><span class="p">[</span><span class="s1">&#39;frame_dir&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">vid_type</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">series</span><span class="p">)</span>
                 <span class="c1"># Check for the folder &#39;Series_Name&#39; in &#39;Video_Type&#39; folder.</span>
                 <span class="c1"># It not present, create it.</span>
                 <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
@@ -249,10 +233,10 @@
 
                 <span class="k">try</span><span class="p">:</span>
                     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span>
-                        <span class="s2">&quot;../Data_Memoir/&quot;</span> <span class="o">+</span> <span class="n">vid_type</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">series</span> <span class="o">+</span> <span class="s2">&quot;/Frames&quot;</span>
+                        <span class="n">paths</span><span class="p">[</span><span class="s1">&#39;frame_dir&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">vid_type</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">series</span> <span class="o">+</span> <span class="s2">&quot;/Frames&quot;</span>
                     <span class="p">):</span>
                         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span>
-                            <span class="s2">&quot;../Data_Memoir/&quot;</span> <span class="o">+</span> <span class="n">vid_type</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">series</span> <span class="o">+</span> <span class="s2">&quot;/Frames&quot;</span>
+                            <span class="n">paths</span><span class="p">[</span><span class="s1">&#39;frame_dir&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">vid_type</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">series</span> <span class="o">+</span> <span class="s2">&quot;/Frames&quot;</span>
                         <span class="p">)</span>
                 <span class="c1"># Check for the folder &#39;Frames&#39; in &#39;Series_Name&#39; folder.</span>
                 <span class="c1"># It not present, create it.</span>
@@ -266,7 +250,7 @@
                     <span class="p">)</span>
 
                 <span class="n">name_of_frame</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="s2">&quot;../Data_Memoir/&quot;</span>
+                    <span class="n">paths</span><span class="p">[</span><span class="s1">&#39;frame_dir&#39;</span><span class="p">]</span>
                     <span class="o">+</span> <span class="n">vid_type</span>
                     <span class="o">+</span> <span class="s2">&quot;/&quot;</span>
                     <span class="o">+</span> <span class="n">series</span>
@@ -289,58 +273,122 @@
         <span class="n">cv2</span><span class="o">.</span><span class="n">destroyAllWindows</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="process_call"><a class="viewcode-back" href="../../../memoir.data.html#memoir.data.video_to_frames.process_call">[docs]</a><span class="k">def</span> <span class="nf">process_call</span><span class="p">():</span>
+<div class="viewcode-block" id="process_call"><a class="viewcode-back" href="../../../memoir.data.html#memoir.data.video_to_frames.process_call">[docs]</a><span class="k">def</span> <span class="nf">process_call</span><span class="p">(</span><span class="n">v_type</span><span class="p">,</span> <span class="n">threshold</span><span class="p">):</span>
 
-    <span class="c1"># Function to start the process.</span>
+    <span class="c1"># Function to start the vid_to_frames.</span>
 
-    <span class="n">which_data</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span>
-        <span class="s2">&quot;Enter the type of data to generate frame for, comma separated [no space] (Leave empty for default)? [default: All] </span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="c1"># Asking for the type of video to make frames of. For now only Real and Animated videos are considered.</span>
-    <span class="p">)</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">which_data</span><span class="p">:</span>
-        <span class="c1"># Setting the default value.</span>
-        <span class="n">which_data</span> <span class="o">=</span> <span class="s1">&#39;All&#39;</span>
-
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">threshold</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span>
-            <span class="nb">input</span><span class="p">(</span>
-                <span class="s1">&#39;Enter the number of frames to make for a particular series (leave empty for default). [default: 50,000] </span><span class="se">\n</span><span class="s1">&#39;</span>
-                <span class="c1"># Asking for threshold: Number of frames to make for a series.</span>
-            <span class="p">))</span>
-        <span class="c1"># If no value is entered for threshold, then it will be equal to default value of 50000</span>
-    <span class="k">except</span><span class="p">:</span>
-        <span class="n">threshold</span> <span class="o">=</span> <span class="mi">50000</span>
+    <span class="n">which_data</span> <span class="o">=</span> <span class="n">v_type</span>
 
     <span class="n">types_of_videos</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="k">if</span> <span class="n">which_data</span> <span class="o">==</span> <span class="s2">&quot;All&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">which_data</span> <span class="o">==</span> <span class="s2">&quot;All&quot;</span> <span class="ow">or</span> <span class="n">which_data</span> <span class="o">==</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">paths</span><span class="p">[</span><span class="s1">&#39;video_dir&#39;</span><span class="p">]):</span>
         <span class="c1"># Make frames for all the videos.</span>
-        <span class="n">types_of_videos</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="s2">&quot;./Memoir_Videos&quot;</span><span class="p">))</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="c1"># Make frame for only the type entered by the user.</span>
-        <span class="k">for</span> <span class="n">w_d</span> <span class="ow">in</span> <span class="n">which_data</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
+        <span class="n">types_of_videos</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">paths</span><span class="p">[</span><span class="s1">&#39;video_dir&#39;</span><span class="p">]))</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">which_data</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">w_d</span> <span class="ow">in</span> <span class="n">which_data</span><span class="p">:</span>
             <span class="n">types_of_videos</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">w_d</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">which_data</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">types_of_videos</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">which_data</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">v_t</span> <span class="ow">in</span> <span class="n">types_of_videos</span><span class="p">:</span>
         <span class="c1"># v_t: Looping over the types of videos to make frame of (entered by the user).</span>
-        <span class="k">for</span> <span class="n">sr</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="s2">&quot;./Memoir_Videos/&quot;</span> <span class="o">+</span> <span class="n">v_t</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">sr</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">paths</span><span class="p">[</span><span class="s1">&#39;video_dir&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">v_t</span><span class="p">)):</span>
             <span class="c1"># sr: Looping over series of each type of videos.</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="s2">&quot;./Memoir_Videos/&quot;</span> <span class="o">+</span> <span class="n">v_t</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">sr</span> <span class="o">+</span> <span class="s2">&quot;/Video&quot;</span><span class="p">)</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">paths</span><span class="p">[</span><span class="s1">&#39;video_dir&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">v_t</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">sr</span> <span class="o">+</span> <span class="s2">&quot;/Video&quot;</span><span class="p">)</span>
             <span class="c1"># Checking if the path is broken or not. If broken, the loop will skip that path.</span>
             <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
                 <span class="k">continue</span>
-            <span class="n">process</span><span class="p">(</span><span class="n">v_t</span><span class="p">,</span> <span class="n">sr</span><span class="p">,</span> <span class="n">threshold</span><span class="p">)</span></div>
+            <span class="n">vid_to_frames</span><span class="p">(</span><span class="n">v_t</span><span class="p">,</span> <span class="n">sr</span><span class="p">,</span> <span class="n">threshold</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="convert_vid_to_frames"><a class="viewcode-back" href="../../../memoir.data.html#memoir.data.video_to_frames.convert_vid_to_frames">[docs]</a><span class="k">def</span> <span class="nf">convert_vid_to_frames</span><span class="p">():</span>
 
-    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span>
-        <span class="s2">&quot;./Memoir_Videos&quot;</span>
-        <span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Videos Found. Starting the process. </span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="n">process_call</span><span class="p">()</span>
+<div class="viewcode-block" id="convert_vid_to_frames"><a class="viewcode-back" href="../../../memoir.data.html#memoir.data.video_to_frames.convert_vid_to_frames">[docs]</a><span class="k">def</span> <span class="nf">convert_vid_to_frames</span><span class="p">(</span><span class="n">vid_type</span><span class="o">=</span><span class="s2">&quot;All&quot;</span><span class="p">,</span> <span class="n">series</span><span class="o">=</span><span class="s1">&#39;All&#39;</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mi">50000</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function converts the videos into frames. This is useful in making dataset for training.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        vid_type (str): Type of the video to make frames from, for now we only use &#39;Real&#39; and &#39;Animated&#39;. Use list for multiple entries. Default: &#39;All&#39;</span>
+<span class="sd">        series (str): Name(s) of a series from the entered vid_type to make frames from. Use list for multiple entries. Default: &#39;All&#39;</span>
+<span class="sd">        threshold (int): Number of frames to make. Make sure the videos are long enough for desired threshold. Default: 50000</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Nothing. It creates a directory &#39;Data_Memoir&#39; inside the repository containing the generated frames.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        OSError: If videos to generate frames from are not found.</span>
+<span class="sd">        OSError: When `series` does not belong to `vid_type`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">check_videos</span><span class="p">(</span><span class="n">v_type_</span><span class="p">,</span> <span class="n">ser_</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">paths</span><span class="p">[</span><span class="s1">&#39;video_dir&#39;</span><span class="p">]):</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Videos found for </span><span class="si">{0}</span><span class="s2"> in </span><span class="si">{1}</span><span class="s2">. Starting the process...</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">ser_</span><span class="p">,</span> <span class="n">v_type_</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+                <span class="k">return</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="s2">&quot;Videos not found.&quot;</span><span class="p">)</span>
+
+    <span class="n">file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span> 
+    <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;./paths.json&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="k">global</span> <span class="n">paths</span>
+        <span class="n">paths</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">series</span> <span class="o">==</span> <span class="s2">&quot;All&quot;</span><span class="p">:</span>
+
+        <span class="c1"># If series is &#39;All&#39;, then it will generate frame from all the series for the given vid_type.</span>
+
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">paths</span><span class="p">[</span><span class="s1">&#39;video_dir&#39;</span><span class="p">]):</span>
+
+            <span class="c1"># Checking for videos.</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Videos Found. Starting the process.&quot;</span><span class="p">)</span>
+            <span class="n">process_call</span><span class="p">(</span><span class="n">v_type</span><span class="o">=</span><span class="n">vid_type</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="s2">&quot;Videos not found.&quot;</span><span class="p">)</span>
+            <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="s1">&#39;Videos not found.</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">vid_type</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="c1"># If the vid_type entered is a list, then further error handling...</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">vid_type</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="c1"># If the number of vid_types entered is more than 1, then it&#39;s an invalid entry.</span>
+                <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="s2">&quot;A series cannot belong to more than one video types.&quot;</span><span class="p">)</span>
+                <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">vid_type</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="c1"># If only one entry for vid_type, then take it out.</span>
+                <span class="n">vid_type</span> <span class="o">=</span> <span class="n">vid_type</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">vid_type</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">vid_type</span> <span class="o">==</span> <span class="s2">&quot;All&quot;</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="s2">&quot;A series cannot belong to all the video types.&quot;</span><span class="p">)</span>
+                <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+
+            <span class="k">if</span> <span class="n">series</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">paths</span><span class="p">[</span><span class="s1">&#39;video_dir&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">vid_type</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="s2">&quot;Series does not belong to entered video type.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">check_videos</span><span class="p">(</span><span class="n">v_type_</span><span class="o">=</span><span class="n">vid_type</span><span class="p">,</span> <span class="n">ser_</span><span class="o">=</span><span class="n">series</span><span class="p">)</span>
+            <span class="n">vid_to_frames</span><span class="p">(</span><span class="n">vid_type</span><span class="o">=</span><span class="n">vid_type</span><span class="p">,</span> <span class="n">series</span><span class="o">=</span><span class="n">series</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">srs</span> <span class="ow">in</span> <span class="n">series</span><span class="p">:</span>
+
+                <span class="k">if</span> <span class="n">srs</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">paths</span><span class="p">[</span><span class="s1">&#39;video_dir&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">vid_type</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span>
+                        <span class="s2">&quot;Series </span><span class="si">{0}</span><span class="s2"> does not belong to entered video type: </span><span class="si">{1}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">srs</span><span class="p">,</span> <span class="n">vid_type</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+                    <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">check_videos</span><span class="p">(</span><span class="n">v_type_</span><span class="o">=</span><span class="n">vid_type</span><span class="p">,</span> <span class="n">ser_</span><span class="o">=</span><span class="n">srs</span><span class="p">)</span>
+                    <span class="n">vid_to_frames</span><span class="p">(</span><span class="n">vid_type</span><span class="o">=</span><span class="n">vid_type</span><span class="p">,</span> <span class="n">series</span><span class="o">=</span><span class="n">srs</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

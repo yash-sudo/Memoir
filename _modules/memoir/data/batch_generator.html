@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>memoir.data.batch_generator &mdash; Memoir 1.0.0 documentation</title>
+  <title>memoir.data.batch_generator &mdash; Memoir 1.0.0</title>
   
 
   
@@ -82,8 +82,11 @@
               
             
             
-              <!-- Local TOC -->
-              <div class="local-toc"></div>
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../memoir.data.html">memoir.data package</a></li>
+</ul>
+
             
           
         </div>
@@ -146,14 +149,13 @@
             
   <h1>Source code for memoir.data.batch_generator</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">os</span>
-
+<span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">cv2</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-
 <div class="viewcode-block" id="d_tree"><a class="viewcode-back" href="../../../memoir.data.html#memoir.data.batch_generator.d_tree">[docs]</a><span class="k">def</span> <span class="nf">d_tree</span><span class="p">():</span>
     <span class="n">vid_types</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span>
-        <span class="s1">&#39;../Data_Memoir&#39;</span>
+        <span class="n">paths</span><span class="p">[</span><span class="s1">&#39;frame_dir&#39;</span><span class="p">]</span>
         <span class="c1"># To get the names of the types of videos in the Data_Memoir directory.</span>
     <span class="p">)</span>
     
@@ -167,7 +169,7 @@
 
         <span class="n">data_tree</span><span class="p">[</span><span class="n">v_t</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span>
             <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-                <span class="s1">&#39;../Data_Memoir&#39;</span><span class="p">,</span> <span class="n">v_t</span>
+                <span class="n">paths</span><span class="p">[</span><span class="s1">&#39;frame_dir&#39;</span><span class="p">],</span> <span class="n">v_t</span>
                 <span class="c1"># Taking the video type as key and listing its content as the corresponding value.</span>
             <span class="p">))</span></div>
 
@@ -193,15 +195,22 @@
 
     <span class="c1"># Function to return the path of the frames for a given series.</span>
 
-    <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;../Data_Memoir&#39;</span><span class="p">,</span> <span class="n">v_type</span><span class="p">,</span> <span class="n">srs</span><span class="p">,</span> <span class="s1">&#39;Frames&#39;</span><span class="p">)</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">paths</span><span class="p">[</span><span class="s1">&#39;frame_dir&#39;</span><span class="p">],</span> <span class="n">v_type</span><span class="p">,</span> <span class="n">srs</span><span class="p">,</span> <span class="s1">&#39;Frames&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">path</span></div>
 
 
 <div class="viewcode-block" id="batch_generator"><a class="viewcode-back" href="../../../memoir.data.html#memoir.data.batch_generator.batch_generator">[docs]</a><span class="k">def</span> <span class="nf">batch_generator</span><span class="p">(</span><span class="n">image_names</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">image_size</span><span class="o">=</span><span class="p">(</span><span class="mi">576</span><span class="p">,</span> <span class="mi">384</span><span class="p">)):</span>
+
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    image_names: List of names of images for a given video_type and series.</span>
-<span class="sd">    batch_size: Size of the batch of images to make.</span>
-<span class="sd">    image_size: Final size of the returned images.</span>
+<span class="sd">    Generates a batch of images. These images are the ones filtered out by `memoir.data.batch_generator.image_names_generator`.  </span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        image_names (list): List of names of images for a given video_type and series, as returned by `image_names_generator`.</span>
+<span class="sd">        batch_size (int): Size of the batch of images.</span>
+<span class="sd">        image_size (tuple): Size of the images in the batch.    </span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        Returns a numpy array of images.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
 
     <span class="c1"># Function to create a batch of images from the list of names of images searched according to user query in batch_generator function</span>
@@ -225,10 +234,28 @@
 
 
 <div class="viewcode-block" id="image_names_generator"><a class="viewcode-back" href="../../../memoir.data.html#memoir.data.batch_generator.image_names_generator">[docs]</a><span class="k">def</span> <span class="nf">image_names_generator</span><span class="p">(</span><span class="n">v_type</span><span class="o">=</span><span class="s1">&#39;Animated&#39;</span><span class="p">,</span> <span class="n">series</span><span class="o">=</span><span class="s1">&#39;All&#39;</span><span class="p">):</span>
+    
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    v_type: Type of the series (For now, &#39;Animated&#39;? or &#39;Real&#39;?) to make batch from.</span>
-<span class="sd">    series: Name of the series to make batch from.</span>
+<span class="sd">    This function is to find the names of the frames according to user query. These names will be used to generate a batch.</span>
+<span class="sd">    This approach helps in preventing memory overloading by not loading the frames but only their names in the memory. </span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        v_type (str): Type of the series (For now, &#39;Animated&#39;? or &#39;Real&#39;?) to take frames for the batch from. Default: &#39;Animated&#39;</span>
+<span class="sd">        series (str): The search can be made more specific if frames are needed only from one particular series. Default: &#39;All&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        Returns a list of names of frames according to user query, to be used to generate batches.</span>
+<span class="sd">    </span>
+<span class="sd">    Raises:</span>
+<span class="sd">        KeyError: When the `series` entered is not present in `v_type`.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span> 
+    <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;./paths.json&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="k">global</span> <span class="n">paths</span>
+        <span class="n">paths</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
 
     <span class="n">d_tree</span><span class="p">()</span>
 
@@ -240,7 +267,7 @@
 
             <span class="c1"># Checking whether entered name of the series belong to the entered type of video.</span>
 
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Entered series is either not present in the data or does not belong to entered video type. Terminating...&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Entered series is either not present in the data or does not belong to entered video type. Terminating...&#39;</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">None</span>
 
     <span class="n">all_images</span> <span class="o">=</span> <span class="p">[]</span>

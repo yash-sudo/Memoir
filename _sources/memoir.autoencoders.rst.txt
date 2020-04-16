@@ -1,0 +1,22 @@
+memoir.autoencoders package
+===========================
+
+.. Submodules
+----------
+
+memoir.autoencoders.vanilla\_neural\_net module
+-----------------------------------------------
+
+.. automodule:: memoir.autoencoders.vanilla_neural_net
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+.. Module contents
+---------------
+
+.. automodule:: memoir.autoencoders
+   :members:
+   :undoc-members:
+   :show-inheritance:
